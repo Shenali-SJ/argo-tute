@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{.Values.microservices[0].serviceName}}'
+  labels:
+    app: '{{.Values.microservices[0].serviceName}}'
+spec:
+  replicas: '{{.Values.microservices[0].avgReplicas}}'
+  selector:
+    matchLabels:
+      app: '{{.Values.microservices[0].serviceName}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Values.microservices[0].serviceName}}'
+    spec:
+      containers:
+      - name: '{{.Values.microservices[0].serviceName}}'
+        image: '{{.Values.microservices[0].dockerImage}}'
+        ports:
+        - containerPort: '{{.Values.microservices[0].containerPort}}'
+        env:
+        - name: '{{.Values.microservices[0].envs[0].name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: '{{.Values.microservices[0].envs[0].name}}'
+        - name: '{{.Values.microservices[0].envs[1].name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: '{{.Values.microservices[0].envs[1].name}}'
+        - name: '{{.Values.microservices[0].envs[2].name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: '{{.Values.microservices[0].envs[2].name}}'
+        - name: '{{.Values.microservices[0].envs[3].name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: '{{.Values.microservices[0].envs[3].name}}'
+        - name: '{{.Values.microservices[0].envs[4].name}}'
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: '{{.Values.microservices[0].envs[4].name}}'

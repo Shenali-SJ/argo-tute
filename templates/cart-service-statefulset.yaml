@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: '{{.Values.microservices[0].serviceName}}'
+spec:
+  serviceName: '{{.Values.microservices[0].serviceName}}'
+  selector:
+    matchLabels:
+      app: '{{.Values.microservices[0].serviceName}}'
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: '{{.Values.microservices[0].serviceName}}-mysql'
+    spec:
+      containers:
+      - name: '{{.Values.microservices[0].serviceName}}-mysql'
+        image: mysql:latest
+        ports:
+        - containerPort: "3306"
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: '{{.Values.microservices[0].serviceName}}'
+              key: MYSQL_DATABASE
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      volumes: []
+  volumeClaimTemplates:
+  - metadata:
+      name: '{{.Values.microservices[0].serviceName}}'
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+      storageClassName: default
